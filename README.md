@@ -87,28 +87,3 @@ podman compose \
 
 ---
 
-### Running individual containers
-
-**Start MongoDB:**
-```bash
-docker run --name db -d mongo:6.0
-```
-
-Then start Rocket.Chat linked to this mongo instance:
-```sh
-    docker run --name rocketchat --link db:db -d rocket.chat
-```
-This will start a Rocket.Chat instance listening on the default Meteor port of 3000 on the container.
-
-If you'd like to be able to access the instance directly at standard port on the host machine:
-
-```sh
-    docker run --name rocketchat -p 80:3000 --env ROOT_URL=http://localhost --link db:db -d rocket.chat
-```
-
-Then, access it via `http://localhost` in a browser.  Replace `localhost` in `ROOT_URL` with your own domain name if you are hosting at your own domain.
-
-If you're using a third party Mongo provider, or working with Kubernetes, you need to override the `MONGO_URL` environment variable:
-```sh
-    docker run --name rocketchat -p 80:3000 --env ROOT_URL=http://localhost --env MONGO_URL=mongodb://mymongourl/mydb -d rocket.chat
-```
