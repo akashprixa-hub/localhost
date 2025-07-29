@@ -9,7 +9,8 @@
 1. Clone: `git clone --depth 1 https://github.com/RocketChat/compose.git`
 2. cd to the cloned dir: `cd compose`
 3. Copy the example environment file: `cp .env.example .env`
-4. Start the stack: `docker compose -f compose-monitoring.yml -f compose-traefik.yml -f compose.yml up -d`
+4. Edit .env file and update values
+5. Start the stack: `docker compose -f compose-monitoring.yml -f compose-traefik.yml -f compose.yml up -d`
 
 ## Getting Started
 
