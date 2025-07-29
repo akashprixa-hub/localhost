@@ -1,12 +1,22 @@
 
 # Rocket.Chat Compose Files
 
+## TLDR;
+
+- Rocket.Chat will be listening on [http://localhost:3000](http://localhost:3000)
+- Grafana will be listening on [http://localhost:5050](http://localhost:5050)
+
+1. Clone: `git clone --depth 1 https://github.com/RocketChat/compose.git`
+2. cd to the cloned dir: `cd compose`
+3. Copy the example environment file: `cp .env.example .env`
+4. Start the stack: `docker compose -f compose-monitoring.yml -f compose-traefik.yml -f compose.yml up -d`
+
 ## Getting Started
 
 First, clone this repository:
 
 ```bash
-git clone --depth 1 https://github.com/RocketChat/Docker.Official.Image.git
+git clone --depth 1 https://github.com/RocketChat/compose.git
 ```
 
 ---
