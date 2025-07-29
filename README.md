@@ -3,8 +3,8 @@
 
 ## TLDR;
 
-1. Clone: `git clone --depth 1 https://github.com/RocketChat/compose.git`
-2. cd to the cloned dir: `cd compose`
+1. Clone: `git clone --depth 1 https://github.com/RocketChat/rocketchat-compose.git`
+2. cd to the cloned dir: `cd rocketchat-compose`
 3. Copy the example environment file: `cp .env.example .env`
 4. Edit .env file and update values
 5. Start the stack: `docker compose -f compose.monitoring.yml -f compose.traefik.yml -f compose.yml up -d`
@@ -20,7 +20,7 @@ You can login to Grafana at: http://grafana.localhost with the default credentia
 First, clone this repository:
 
 ```bash
-git clone --depth 1 https://github.com/RocketChat/compose.git
+git clone --depth 1 https://github.com/RocketChat/rocketchat-compose.git
 ```
 
 ---
@@ -51,16 +51,16 @@ For deploying the recommended stack with Rocket.Chat, Traefik, MongoDB, NATS, an
    - With Docker Compose:
      ```bash
      docker compose \
-       -f compose-monitoring.yml \
-       -f compose-traefik.yml \
+       -f compose.monitoring.yml \
+       -f compose.traefik.yml \
        -f compose.yml \
        up -d
      ```
    - Or with Podman Compose:
      ```bash
      podman compose \
-       -f compose-monitoring.yml \
-       -f compose-traefik.yml \
+       -f compose.monitoring.yml \
+       -f compose.traefik.yml \
        -f compose.yml \
        up -d
      ```
@@ -72,16 +72,16 @@ For deploying the recommended stack with Rocket.Chat, Traefik, MongoDB, NATS, an
   - With Docker Compose:
     ```bash
     docker compose \
-        -f compose-monitoring.yml \
-        -f compose-traefik.yml \
+        -f compose.monitoring.yml \
+        -f compose.traefik.yml \
         -f compose.yml \
         down
     ```
   - Or with Podman Compose:
      ```bash
      podman compose \
-       -f compose-monitoring.yml \
-       -f compose-traefik.yml \
+       -f compose.monitoring.yml \
+       -f compose.traefik.yml \
        -f compose.yml \
        down
      ```
@@ -94,7 +94,7 @@ To exclude components (e.g., MongoDB or Prometheus), simply remove their compose
 
 ```bash
 podman compose \
-  -f compose-traefik.yml \
+  -f compose.traefik.yml \
   -f compose.yml \
   up -d
 ```
