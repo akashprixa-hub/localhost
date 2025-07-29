@@ -3,14 +3,17 @@
 
 ## TLDR;
 
-- Rocket.Chat will be listening on [http://localhost:3000](http://localhost:3000)
-- Grafana will be listening on [http://localhost:5050](http://localhost:5050)
-
 1. Clone: `git clone --depth 1 https://github.com/RocketChat/compose.git`
 2. cd to the cloned dir: `cd compose`
 3. Copy the example environment file: `cp .env.example .env`
 4. Edit .env file and update values
 5. Start the stack: `docker compose -f compose.monitoring.yml -f compose.traefik.yml -f compose.yml up -d`
+
+You can access Rocket.Chat at: http://localhost
+
+You can login to Grafana at: http://grafana.localhost with the default credentials:
+* User: admin
+* Password: rc-admin
 
 ## Getting Started
 
@@ -37,6 +40,7 @@ For deploying the recommended stack with Rocket.Chat, Traefik, MongoDB, NATS, an
      ```env
      REG_TOKEN=            # Rocket.Chat Cloud registration token (optional)
      TRAEFIK_PROTOCOL=http       # Set to 'https' to enable HTTPS with Traefik (recommended for internet exposure)
+     LETSENCRYPT_ENABLE=   # Set to true after you've set your domain and lets encrypt email
      LETSENCRYPT_EMAIL=    # Email for Let's Encrypt certificate
      DOMAIN=localhost      # Domain for Rocket.Chat
      GRAFANA_DOMAIN=grafana.localhost # Domain for Grafana
@@ -65,13 +69,22 @@ For deploying the recommended stack with Rocket.Chat, Traefik, MongoDB, NATS, an
    > **Note:** If deploying to a custom domain, update `ROOT_URL` and related variables accordingly.
 
 3. **Stop the stack:**
-   ```bash
-   podman compose \
-     -f compose-monitoring.yml \
-     -f compose-traefik.yml \
-     -f compose.yml \
-     down
-   ```
+  - With Docker Compose:
+    ```bash
+    docker compose \
+        -f compose-monitoring.yml \
+        -f compose-traefik.yml \
+        -f compose.yml \
+        down
+    ```
+  - Or with Podman Compose:
+     ```bash
+     podman compose \
+       -f compose-monitoring.yml \
+       -f compose-traefik.yml \
+       -f compose.yml \
+       down
+     ```
 
 ---
 

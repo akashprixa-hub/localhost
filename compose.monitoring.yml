@@ -43,14 +43,14 @@ services:
       - --collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)
     expose:
       - 9100
-  
+
   grafana:
     image: docker.io/grafana/grafana:${GRAFANA_VERSION:-12.0.2}
     restart: always
     expose:
       - 3000
     ports:
-      - "${BIND_IP:-0.0.0.0}:${GRAFANA_HOST_PORT:-5050}:${PORT:-3000}"
+      - "${BIND_IP:-0.0.0.0}:${GRAFANA_HOST_PORT:-5050}:3000"
     volumes:
       - grafana_data:/var/lib/grafana
       - ./files/grafana/dashboards:/dashboards:Z

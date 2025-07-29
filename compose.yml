@@ -9,7 +9,7 @@ services:
       ROOT_URL: ${ROOT_URL:-http://localhost}
       PORT: ${PORT:-3000}
       DEPLOY_METHOD: docker
-      DEPLOY_PLATFORM: ${DEPLOY_PLATFORM:-}
+      DEPLOY_PLATFORM: compose
       REG_TOKEN: ${REG_TOKEN:-}
       OVERWRITE_SETTING_Prometheus_Enabled: true
       OVERWRITE_SETTING_Prometheus_Port: "${METRICS_PORT:-9458}"
@@ -31,7 +31,7 @@ services:
   nats:
     image: docker.io/nats:${NATS_VERSION:-2.11-alpine}
     restart: always
-    expose: 
+    expose:
       - 4222
       - 8222
       - 6222
@@ -41,8 +41,8 @@ services:
     #   timeout: 10s
     #   retries: 10
     #   start_period: 30s
-    command: --http_port 8222 
-  
+    command: --http_port 8222
+
   nats-exporter:
     image: docker.io/bitnami/nats-exporter:${NATS_EXPORTER_VERSION:-0.17.3}
     depends_on:

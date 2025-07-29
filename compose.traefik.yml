@@ -8,7 +8,7 @@ services:
   #       test -f /traefik_config/dynamic.yml && echo "Skipping: target file already exists" && exit 0
   #       export http=http
   #       [ "${TRAEFIK_HTTPS}" = "y" ] && http=https
-        
+
   #       cp \
   #         /traefik_config/template-$${http}-dynamic.yml \
   #         /traefik_config/dynamic.yml
@@ -31,7 +31,7 @@ services:
       - --entrypoints.metrics.address=:9096
       - --metrics.prometheus=true
       # ssl
-      - --certificatesresolvers.le.acme.tlschallenge=true
+      - --certificatesresolvers.le.acme.tlschallenge=${LETSENCRYPT_ENABLED:-false}
       - --certificatesresolvers.le.acme.email=${LETSENCRYPT_EMAIL?need email for cert expiry notifications}
       - --certificatesresolvers.le.acme.storage=/letsencrypt/acme.json
       # ssl
