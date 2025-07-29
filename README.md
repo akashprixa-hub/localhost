@@ -10,7 +10,7 @@
 2. cd to the cloned dir: `cd compose`
 3. Copy the example environment file: `cp .env.example .env`
 4. Edit .env file and update values
-5. Start the stack: `docker compose -f compose-monitoring.yml -f compose-traefik.yml -f compose.yml up -d`
+5. Start the stack: `docker compose -f compose.monitoring.yml -f compose.traefik.yml -f compose.yml up -d`
 
 ## Getting Started
 
