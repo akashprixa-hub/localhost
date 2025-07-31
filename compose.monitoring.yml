@@ -20,13 +20,12 @@ services:
     volumes:
       - prometheus_tsdb:/prometheus
       - ./files/prometheus:/etc/prometheus:Z
-    # healthcheck:
-    #   test: ["CMD", "nc", "-zv", "-w", "10", "localhost", "9090"]
-    #   interval: 30s
-    #   timeout: 10s
-    #   retries: 10
-    #   start_period: 10s
-
+      # healthcheck:
+      #   test: ["CMD", "nc", "-zv", "-w", "10", "localhost", "9090"]
+      #   interval: 30s
+      #   timeout: 10s
+      #   retries: 10
+      #   start_period: 10s
   node-exporter:
     image: docker.io/prom/node-exporter:${NODE_EXPORTER_VERSION:-v1.9.1}
     restart: always
@@ -34,16 +33,15 @@ services:
     network_mode: host # Allows Node Exporter to access host network interfaces directly
     pid: host # Allows Node Exporter to access host process information
     volumes:
-      - /sys:/host/sys:ro      # Mounts the /sys filesystem for system metrics
-      - /proc:/host/proc:ro    # Mounts the /proc filesystem for process metrics
-      - /dev:/host/dev:ro      # Mounts the /dev filesystem for device metrics
+      - /sys:/host/sys:ro # Mounts the /sys filesystem for system metrics
+      - /proc:/host/proc:ro # Mounts the /proc filesystem for process metrics
+      - /dev:/host/dev:ro # Mounts the /dev filesystem for device metrics
     command:
       - --path.procfs=/host/proc
       - --path.sysfs=/host/sys
       - --collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)
     expose:
       - 9100
-
   grafana:
     image: docker.io/grafana/grafana:${GRAFANA_VERSION:-12.0.2}
     restart: always
@@ -60,8 +58,9 @@ services:
       - GF_AUTH_ANONYMOUS_ENABLED=false
       - GF_AUTH_ANONYMOUS_ORG_ROLE=Viewer
       - GF_AUTH_ANONYMOUS_ORG_NAME=Main Org.
-
+      - GF_SERVER_SERVE_FROM_SUB_PATH=true
+      - GF_SERVER_ROOT_URL=http://${GRAFANA_DOMAIN}${GRAFANA_PATH}/
 volumes:
-  prometheus_tsdb: { driver: local }
-  prometheus_config: { driver: local }
-  grafana_data: { driver: local }
+  prometheus_tsdb: {driver: local}
+  prometheus_config: {driver: local}
+  grafana_data: {driver: local}

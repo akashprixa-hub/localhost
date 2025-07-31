@@ -15,13 +15,13 @@ services:
   #   volumes:
   #     - ./files/traefik/:/traefik_config:Z
   #   restart: "no"
-
   traefik:
     image: docker.io/traefik:${TRAEFIK_RELEASE:-v3.4}
     restart: always
     environment:
       DOMAIN: "${DOMAIN:-localhost}"
-      GRAFANA_DOMAIN: "${GRAFANA_DOMAIN:-grafana.localhost}"
+      GRAFANA_DOMAIN: "${GRAFANA_DOMAIN-}"
+      GRAFANA_PATH: "${GRAFANA_PATH-/}"
     command:
       - --api.insecure=${TRAEFIK_API_INSECURE:-false}
       - --providers.docker=false
@@ -53,13 +53,12 @@ services:
     volumes:
       - traefik:/letsencrypt:rw
       - ./files/traefik/:/traefik_config:Z
-    # healthcheck:
-    #   test: ["CMD", "traefik", "healthcheck"]
-    #   interval: 30s
-    #   timeout: 30s
-    #   retries: 5
-    #   start_period: 30s
-
+      # healthcheck:
+      #   test: ["CMD", "traefik", "healthcheck"]
+      #   interval: 30s
+      #   timeout: 30s
+      #   retries: 5
+      #   start_period: 30s
 volumes:
   # this is for ssl shennanigans, users usually won't need to bother with it
-  traefik: { driver: local }
+  traefik: {driver: local}

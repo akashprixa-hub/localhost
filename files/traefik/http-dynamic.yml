@@ -4,12 +4,17 @@ http:
       entryPoints:
         - http
       service: rocketchat
-      rule: Host(`{{ env "DOMAIN" }}`)
+      rule: Host(`{{ env "DOMAIN" }}`) && PathPrefix(`/`)
     grafana:
       entryPoints:
         - http
-      rule: Host(`{{env "GRAFANA_DOMAIN"}}`)
       service: grafana
+      rule: |-
+        {{ if eq (env "GRAFANA_DOMAIN") "" }}
+          Host(`{{ env "DOMAIN" }}`) && PathPrefix(`{{ env "GRAFANA_PATH" }}`)
+        {{ else }}
+          Host(`{{ env "GRAFANA_DOMAIN" }}`)
+        {{ end }}
   services:
     rocketchat:
       loadBalancer:

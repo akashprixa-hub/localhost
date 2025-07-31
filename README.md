@@ -36,18 +36,41 @@ For deploying the recommended stack with Rocket.Chat, Traefik, MongoDB, NATS, an
      ```bash
      cp .env.example .env
      ```
-   - Edit `.env` to fit your deployment. Recommended changes:
+   - Edit `.env` to fit your deployment. Recommended changes - we recommend to keep other values from the example for reference.
      ```env
-     REG_TOKEN=            # Rocket.Chat Cloud registration token (optional)
-     TRAEFIK_PROTOCOL=http       # Set to 'https' to enable HTTPS with Traefik (recommended for internet exposure)
-     LETSENCRYPT_ENABLE=   # Set to true after you've set your domain and lets encrypt email
-     LETSENCRYPT_EMAIL=    # Email for Let's Encrypt certificate
-     DOMAIN=localhost      # Domain for Rocket.Chat
-     GRAFANA_DOMAIN=grafana.localhost # Domain for Grafana
-     ROOT_URL=http://localhost # Should match your domain; use https if enabled
+     # Rocket.Chat Cloud registration token (optional)
+     REG_TOKEN=
+     # Set to 'https' to enable HTTPS with Traefik (recommended for internet exposure)
+     TRAEFIK_PROTOCOL=http
+     # Set to true after you've set your domain and lets encrypt email
+     LETSENCRYPT_ENABLE=
+     # Email for Let's Encrypt certificate
+     LETSENCRYPT_EMAIL=
+     # Domain for Rocket.Chat
+     DOMAIN=localhost
+     # Domain for Grafana
+     GRAFANA_DOMAIN=grafana.localhost
+     # Should match your domain; use https if enabled
+     ROOT_URL=http://localhost
      ```
 
-2. **Start the stack:**
+2. **Using Grafana as a Path instead of Subdomain:**
+  - Change the variables
+    ```env
+    # set this to empty
+    GRAFANA_DOMAIN=
+    # set this to you desired path without trailing slash
+    GRAFANA_PATH=/grafana
+    ```
+  - If you wan't to use subdomain
+    ```env
+    # set this to your subdomain
+    GRAFANA_DOMAIN=grafana.your-domain.com
+    # set this as empty
+    GRAFANA_PATH=
+    ```
+
+3. **Start the stack:**
    - With Docker Compose:
      ```bash
      docker compose \
@@ -68,7 +91,7 @@ For deploying the recommended stack with Rocket.Chat, Traefik, MongoDB, NATS, an
    This will launch all containers. Rocket.Chat will be available at [http://localhost](http://localhost), and Grafana at [http://grafana.localhost](http://grafana.localhost).
    > **Note:** If deploying to a custom domain, update `ROOT_URL` and related variables accordingly.
 
-3. **Stop the stack:**
+4. **Stop the stack:**
   - With Docker Compose:
     ```bash
     docker compose \

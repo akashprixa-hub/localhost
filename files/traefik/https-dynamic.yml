@@ -18,7 +18,12 @@ http:
     grafana:
       entryPoints:
         - https
-      rule: Host(`{{ env "GRAFANA_DOMAIN" }}`)
+      rule: |
+        {{ if eq (env "GRAFANA_DOMAIN") "" }}
+          Host(`{{ env "DOMAIN" }}`) && PathPrefix(`{{ env "GRAFANA_PATH" }}`)
+        {{ else }}
+          Host(`{{ env "GRAFANA_DOMAIN" }}`)
+        {{ end }}
       service: grafana
       tls:
         certResolver: le
