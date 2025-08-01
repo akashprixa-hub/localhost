@@ -43,7 +43,7 @@ For deploying the recommended stack with Rocket.Chat, Traefik, MongoDB, NATS, an
      # Set to 'https' to enable HTTPS with Traefik (recommended for internet exposure)
      TRAEFIK_PROTOCOL=http
      # Set to true after you've set your domain and lets encrypt email
-     LETSENCRYPT_ENABLE=
+     LETSENCRYPT_ENABLED=
      # Email for Let's Encrypt certificate
      LETSENCRYPT_EMAIL=
      # Domain for Rocket.Chat
