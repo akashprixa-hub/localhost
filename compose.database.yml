@@ -1,0 +1,59 @@
+services:
+  nats:
+    image: docker.io/nats:${NATS_VERSION:-2.11-alpine}
+    restart: always
+    expose:
+      - 4222
+      - 8222
+      - 6222
+    # healthcheck:
+    #   test: ["CMD", "nc", "-zv", "-w", "10", "nats", "4222"]
+    #   interval: 30s
+    #   timeout: 10s
+    #   retries: 10
+    #   start_period: 30s
+    command: --http_port 8222
+  nats-exporter:
+    image: docker.io/bitnami/nats-exporter:${NATS_EXPORTER_VERSION:-0.17.3}
+    depends_on:
+      - nats
+    expose:
+      - 7777
+    command:
+      - -healthz
+      - -varz
+      - "http://nats:8222"
+  mongodb:
+    image: docker.io/bitnami/mongodb:${MONGODB_VERSION:-6.0}
+    restart: always
+    volumes:
+      - ${MONGODB_HOST_PATH:-mongodb_data}:/bitnami/mongodb
+    environment:
+      MONGODB_REPLICA_SET_MODE: primary
+      MONGODB_REPLICA_SET_NAME: ${MONGODB_REPLICA_SET_NAME:-rs0}
+      MONGODB_PORT_NUMBER: ${MONGODB_PORT_NUMBER:-27017}
+      MONGODB_INITIAL_PRIMARY_HOST: ${MONGODB_INITIAL_PRIMARY_HOST:-mongodb}
+      MONGODB_INITIAL_PRIMARY_PORT_NUMBER: ${MONGODB_INITIAL_PRIMARY_PORT_NUMBER:-27017}
+      MONGODB_ADVERTISED_HOSTNAME: ${MONGODB_ADVERTISED_HOSTNAME:-mongodb}
+      MONGODB_ENABLE_JOURNAL: ${MONGODB_ENABLE_JOURNAL:-true}
+      ALLOW_EMPTY_PASSWORD: ${ALLOW_EMPTY_PASSWORD:-yes}
+    # healthcheck:
+    #   test: ["CMD", "mongosh", "--host", "mongodb", "--port", "${MONGODB_PORT_NUMBER:-27017}", "--eval", "db.adminCommand('ping')"]
+    #   interval: 30s
+    #   timeout: 30s
+    #   retries: 10
+    #   start_period: 30s
+    expose:
+      - ${MONGODB_PORT_NUMBER:-27017}
+  mongodb-exporter:
+    image: docker.io/percona/mongodb_exporter:${MONGODB_EXPORTER_VERSION:-0.44.0}
+    depends_on:
+      - mongodb
+    expose:
+      - 9216
+    command:
+      - --mongodb.uri=${MONGODB_URI:-mongodb://mongodb:27017}
+      - --collect-all
+      - --compatible-mode
+volumes:
+  mongodb_data: {driver: local}
