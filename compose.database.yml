@@ -29,7 +29,7 @@ services:
     volumes:
       - ${MONGODB_HOST_PATH:-mongodb_data}:/bitnami/mongodb
     environment:
-      MONGODB_REPLICA_SET_MODE: primary
+      MONGODB_REPLICA_SET_MODE: ${MONGODB_REPLICA_SET_MODE:-primary}
       MONGODB_REPLICA_SET_NAME: ${MONGODB_REPLICA_SET_NAME:-rs0}
       MONGODB_PORT_NUMBER: ${MONGODB_PORT_NUMBER:-27017}
       MONGODB_INITIAL_PRIMARY_HOST: ${MONGODB_INITIAL_PRIMARY_HOST:-mongodb}
