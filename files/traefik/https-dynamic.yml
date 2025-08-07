@@ -12,7 +12,7 @@ http:
       entryPoints:
         - https
       service: rocketchat
-      rule: Host(`{{ env "DOMAIN" }}`)
+      rule: Host()
       tls:
         certResolver: le
     grafana:
@@ -20,9 +20,9 @@ http:
         - https
       rule: |
         {{ if eq (env "GRAFANA_DOMAIN") "" }}
-          Host(`{{ env "DOMAIN" }}`) && PathPrefix(`{{ env "GRAFANA_PATH" }}`)
+          Host() && PathPrefix()
         {{ else }}
-          Host(`{{ env "GRAFANA_DOMAIN" }}`)
+          Host()
         {{ end }}
       service: grafana
       tls:
@@ -36,3 +36,4 @@ http:
       loadBalancer:
         servers:
           - url: "http://grafana:3000"
+  EOF

@@ -1,0 +1,29 @@
+name: Generate AIO docker-file
+run-name: Generate AIO docker-file
+
+on:
+  push:
+
+jobs:
+  grafana-alloy:
+    runs-on: alpine-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+
+      - name: run script
+        run: |
+          apk add --no-cache yq
+          mkdir -p generated
+          yq eval-all '. as $item ireduce ({}; . * $item)' \
+            compose.yml \
+            compose.database.yml \
+            compose.traefik.yml \
+            | tee generated/docker-compose.yml
+
+      - name: Push to master
+        uses: EndBug/add-and-commit@v9
+        with:
+          add: "generate/docker-compose.yml"
+          message: "Generated docker-compose.yml in generated/docker-compose.yml"
+          push: true

@@ -1,23 +1,22 @@
 services:
-  # traefik-init:
-  #   image: docker.io/alpine:latest
-  #   entrypoint: sh
-  #   command:
-  #     - -c
-  #     - |
-  #       test -f /traefik_config/dynamic.yml && echo "Skipping: target file already exists" && exit 0
-  #       export http=http
-  #       [ "${TRAEFIK_HTTPS}" = "y" ] && http=https
-
-  #       cp \
-  #         /traefik_config/template-$${http}-dynamic.yml \
-  #         /traefik_config/dynamic.yml
-  #   volumes:
-  #     - ./files/traefik/:/traefik_config:Z
-  #   restart: "no"
+  traefik-init:
+    image: docker.io/alpine:latest
+    entrypoint: sh
+    command:
+      - -c
+      - |-
+        set -e
+        # quote 'eof' to prevent variable expansion
+        rm -rf /traefik_config/* || true
+        
+    volumes:
+      - traefik_config:/traefik_config
+    restart: "no"
   traefik:
     image: docker.io/traefik:${TRAEFIK_RELEASE:-v3.4}
     restart: always
+    depends_on:
+      - traefik-init
     environment:
       DOMAIN: "${DOMAIN:-localhost}"
       GRAFANA_DOMAIN: "${GRAFANA_DOMAIN-}"
@@ -51,8 +50,8 @@ services:
       - ${TRAEFIK_DASHBOARD_PORT:-8080}
       - ${TRAEFIK_HTTPS_PORT:-443}
     volumes:
-      - traefik:/letsencrypt:rw
-      - ./files/traefik/:/traefik_config:Z
+      - traefik_ssl:/letsencrypt:rw
+      - traefik_config:/traefik_config:Z
       # healthcheck:
       #   test: ["CMD", "traefik", "healthcheck"]
       #   interval: 30s
@@ -61,4 +60,5 @@ services:
       #   start_period: 30s
 volumes:
   # this is for ssl shennanigans, users usually won't need to bother with it
-  traefik: {driver: local}
+  traefik_ssl: {driver: local}
+  traefik_config: {driver: local}
