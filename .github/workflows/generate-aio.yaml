@@ -16,7 +16,10 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v4
 
-      - uses: chrisdickinson/setup-yq@latest
+      - name: "Setup yq"
+        uses: dcarbone/install-yq-action@v1
+        with:
+          version: "v4.43.1"
 
       - name: run script
         run: |
