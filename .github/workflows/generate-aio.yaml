@@ -3,6 +3,8 @@ run-name: Generate AIO docker-file
 
 on:
   push:
+    paths-ignore:
+      - generated/
 
 jobs:
   grafana-alloy:
