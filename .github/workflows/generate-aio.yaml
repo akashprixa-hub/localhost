@@ -11,14 +11,15 @@ on:
 
 jobs:
   grafana-alloy:
-    runs-on: alpine-latest
+    runs-on: ubuntu-latest
     steps:
       - name: Check out repository code
         uses: actions/checkout@v4
 
+      - uses: chrisdickinson/setup-yq@latest
+
       - name: run script
         run: |
-          apk add --no-cache yq
           mkdir -p generated
           yq eval-all '. as $item ireduce ({}; . * $item)' \
             compose.yml \
