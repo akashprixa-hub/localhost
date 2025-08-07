@@ -10,7 +10,7 @@ on:
       - generated/
 
 jobs:
-  grafana-alloy:
+  build-aio-image:
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository code
