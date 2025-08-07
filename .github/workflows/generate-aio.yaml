@@ -23,6 +23,7 @@ jobs:
 
       - name: run script
         run: |
+          set -euo pipefail
           mkdir -p generated
           yq eval-all '. as $item ireduce ({}; . * $item)' \
             compose.yml \
