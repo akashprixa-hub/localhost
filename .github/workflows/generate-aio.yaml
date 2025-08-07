@@ -3,6 +3,8 @@ run-name: Generate AIO docker-file
 
 on:
   push:
+    branches:
+      - main
     paths-ignore:
       - generated/
 
@@ -26,6 +28,6 @@ jobs:
       - name: Push to master
         uses: EndBug/add-and-commit@v9
         with:
-          add: "generate/docker-compose.yml"
+          add: "generated/docker-compose.yml"
           message: "Generated docker-compose.yml in generated/docker-compose.yml"
           push: true

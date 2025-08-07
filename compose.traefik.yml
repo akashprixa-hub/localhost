@@ -8,7 +8,75 @@ services:
         set -e
         # quote 'eof' to prevent variable expansion
         rm -rf /traefik_config/* || true
-        
+        cat <<'EOF' | tee /traefik_config/http-dynamic.yml
+        http:
+          routers:
+            rocketchat:
+              entryPoints:
+                - http
+              service: rocketchat
+              rule: Host(`{{ env "DOMAIN" }}`) && PathPrefix(`/`)
+            grafana:
+              entryPoints:
+                - http
+              service: grafana
+              rule: |-
+                {{ if eq (env "GRAFANA_DOMAIN") "" }}
+                  Host(`{{ env "DOMAIN" }}`) && PathPrefix(`{{ env "GRAFANA_PATH" }}`)
+                {{ else }}
+                  Host(`{{ env "GRAFANA_DOMAIN" }}`)
+                {{ end }}
+          services:
+            rocketchat:
+              loadBalancer:
+                servers:
+                  - url: "http://rocketchat:3000"
+            grafana:
+              loadBalancer:
+                servers:
+                  - url: "http://grafana:3000"
+        'EOF'
+
+        cat <<'EOF' | tee /traefik_config/https-dynamic.yml
+        entrypoints:
+          https:
+            address: ":443"
+            http:
+              redirections:
+                entryPoint:
+                  to: "http"
+                  scheme: "https"
+        http:
+          routers:
+            rocketchat:
+              entryPoints:
+                - https
+              service: rocketchat
+              rule: Host(`{{ env "DOMAIN" }}`)
+              tls:
+                certResolver: le
+            grafana:
+              entryPoints:
+                - https
+              rule: |
+                {{ if eq (env "GRAFANA_DOMAIN") "" }}
+                  Host(`{{ env "DOMAIN" }}`) && PathPrefix(`{{ env "GRAFANA_PATH" }}`)
+                {{ else }}
+                  Host(`{{ env "GRAFANA_DOMAIN" }}`)
+                {{ end }}
+              service: grafana
+              tls:
+                certResolver: le
+          services:
+            rocketchat:
+              loadBalancer:
+                servers:
+                  - url: "http://rocketchat:3000"
+            grafana:
+              loadBalancer:
+                servers:
+                  - url: "http://grafana:3000"
+          'EOF'
     volumes:
       - traefik_config:/traefik_config
     restart: "no"
