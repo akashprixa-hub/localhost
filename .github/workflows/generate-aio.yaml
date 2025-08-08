@@ -5,6 +5,7 @@ on:
   push:
     branches:
       - main
+      - monitoring-use2-new
     paths-ignore:
       - generated/
 
