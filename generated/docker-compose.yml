@@ -92,79 +92,7 @@ services:
     entrypoint: sh
     command:
       - -c
-      - |-
-        set -e
-        # quote 'eof' to prevent variable expansion
-        rm -rf /traefik_config/* || true
-        cat <<'EOF' | tee /traefik_config/http-dynamic.yml
-        http:
-          routers:
-            rocketchat:
-              entryPoints:
-                - http
-              service: rocketchat
-              rule: Host(`{{ env "DOMAIN" }}`) && PathPrefix(`/`)
-            grafana:
-              entryPoints:
-                - http
-              service: grafana
-              rule: |-
-                {{ if eq (env "GRAFANA_DOMAIN") "" }}
-                  Host(`{{ env "DOMAIN" }}`) && PathPrefix(`{{ env "GRAFANA_PATH" }}`)
-                {{ else }}
-                  Host(`{{ env "GRAFANA_DOMAIN" }}`)
-                {{ end }}
-          services:
-            rocketchat:
-              loadBalancer:
-                servers:
-                  - url: "http://rocketchat:3000"
-            grafana:
-              loadBalancer:
-                servers:
-                  - url: "http://grafana:3000"
-        EOF
-
-        cat <<'EOF' | tee /traefik_config/https-dynamic.yml
-        entrypoints:
-          https:
-            address: ":443"
-            http:
-              redirections:
-                entryPoint:
-                  to: "http"
-                  scheme: "https"
-        http:
-          routers:
-            rocketchat:
-              entryPoints:
-                - https
-              service: rocketchat
-              rule: Host(`{{ env "DOMAIN" }}`)
-              tls:
-                certResolver: le
-            grafana:
-              entryPoints:
-                - https
-              rule: |
-                {{ if eq (env "GRAFANA_DOMAIN") "" }}
-                  Host(`{{ env "DOMAIN" }}`) && PathPrefix(`{{ env "GRAFANA_PATH" }}`)
-                {{ else }}
-                  Host(`{{ env "GRAFANA_DOMAIN" }}`)
-                {{ end }}
-              service: grafana
-              tls:
-                certResolver: le
-          services:
-            rocketchat:
-              loadBalancer:
-                servers:
-                  - url: "http://rocketchat:3000"
-            grafana:
-              loadBalancer:
-                servers:
-                  - url: "http://grafana:3000"
-          EOF
+      - "set -e\n# quote 'eof' to prevent variable expansion\nrm -rf /traefik_config/* || true\nmkdir -p /traefik_config/http /traefik_config/https\ncat <<'EOF' | tee /traefik_config/http/dynamic.yml\nhttp:\n  routers:\n    rocketchat:\n      entryPoints:\n        - http\n      service: rocketchat\n      rule: Host(`{{ env \"DOMAIN\" }}`) && PathPrefix(`/`)\n    grafana:\n      entryPoints:\n        - http\n      service: grafana\n      rule: |-\n        {{ if eq (env \"GRAFANA_DOMAIN\") \"\" }}\n          Host(`{{ env \"DOMAIN\" }}`) && PathPrefix(`{{ env \"GRAFANA_PATH\" }}`)\n        {{ else }}\n          Host(`{{ env \"GRAFANA_DOMAIN\" }}`)\n        {{ end }}\n  services:\n    rocketchat:\n      loadBalancer:\n        servers:\n          - url: \"http://rocketchat:3000\"\n    grafana:\n      loadBalancer:\n        servers:\n          - url: \"http://grafana:3000\"\nEOF\n\ncat <<'EOF' | tee /traefik_config/https/dynamic.yml\nhttps:\n  address: \":443\"\n  http:\n    redirections:\n      entryPoint:\n        to: \"http\"\n        scheme: \"https\"\nhttp:\n  routers:\n    rocketchat:\n      entryPoints:\n        - https\n      service: rocketchat\n      rule: Host(`{{ env \"DOMAIN\" }}`)\n      tls:\n        certResolver: le\n    grafana:\n      entryPoints:\n        - https\n      rule: |\n        {{ if eq (env \"GRAFANA_DOMAIN\") \"\" }}\n          Host(`{{ env \"DOMAIN\" }}`) && PathPrefix(`{{ env \"GRAFANA_PATH\" }}`)\n        {{ else }}\n          Host(`{{ env \"GRAFANA_DOMAIN\" }}`)\n        {{ end }}\n      service: grafana\n      tls:\n        certResolver: le\n  services:\n    rocketchat:\n      loadBalancer:\n        servers:\n          - url: \"http://rocketchat:3000\"\n    grafana:\n      loadBalancer:\n        servers:\n          - url: \"http://grafana:3000\"\nEOF\n  "
     volumes:
       - traefik_config:/traefik_config
     restart: "no"
@@ -177,6 +105,7 @@ services:
       DOMAIN: "${DOMAIN:-localhost}"
       GRAFANA_DOMAIN: "${GRAFANA_DOMAIN-}"
       GRAFANA_PATH: "${GRAFANA_PATH-/}"
+      TRAEFIK_PROTOCOL: "${TRAEFIK_PROTOCOL-}"
     command:
       - --api.insecure=${TRAEFIK_API_INSECURE:-false}
       - --providers.docker=false
@@ -194,7 +123,7 @@ services:
       - --metrics.prometheus.addEntryPointsLabels=true
       - --metrics.prometheus.addRoutersLabels=true
       - --metrics.prometheus.addServicesLabels=true
-      - --providers.file.filename=/traefik_config/${TRAEFIK_PROTOCOL}-dynamic.yml
+      - --providers.file.filename=/traefik_config/${TRAEFIK_PROTOCOL}/dynamic.yml
       - --providers.file.watch=true
     ports:
       - ${TRAEFIK_HTTP_PORT:-80}:${TRAEFIK_HTTP_PORT:-80}
