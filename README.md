@@ -48,8 +48,9 @@ For deploying the recommended stack with Rocket.Chat, Traefik, MongoDB, NATS, an
      LETSENCRYPT_EMAIL=
      # Domain for Rocket.Chat
      DOMAIN=localhost
-     # Domain for Grafana
-     GRAFANA_DOMAIN=grafana.localhost
+     # Domain for Grafana, blank to use as a path
+     GRAFANA_DOMAIN=
+     GRAFANA_PATH=/grafana
      # Should match your domain; use https if enabled
      ROOT_URL=http://localhost
      ```
