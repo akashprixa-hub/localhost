@@ -77,6 +77,9 @@ services:
                 servers:
                   - url: "http://grafana:3000"
         EOF
+
+        echo "files generated, keeping container alive to podman-compose detect it"
+        tail -f /dev/null
           
     volumes:
       - traefik_config:/traefik_config
