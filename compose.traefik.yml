@@ -82,7 +82,7 @@ services:
         tail -f /dev/null
           
     volumes:
-      - traefik_config:/traefik_config
+      - traefik_config:/traefik_config:z
     restart: "no"
   traefik:
     image: docker.io/traefik:${TRAEFIK_RELEASE:-v3.4}
@@ -123,8 +123,8 @@ services:
       - ${TRAEFIK_DASHBOARD_PORT:-8080}
       - ${TRAEFIK_HTTPS_PORT:-443}
     volumes:
-      - traefik_ssl:/letsencrypt:rw
-      - traefik_config:/traefik_config:Z
+      - traefik_ssl:/letsencrypt:z
+      - traefik_config:/traefik_config:z
       # healthcheck:
       #   test: ["CMD", "traefik", "healthcheck"]
       #   interval: 30s
