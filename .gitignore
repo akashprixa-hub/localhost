@@ -1,5 +1,3 @@
 /data/
 node_modules
 .env
-./traefik_config
-./traefik_config/
